@@ -17,7 +17,18 @@ func main() {
 		//TODO
 	})
 
+	http.HandleFunc("/users", func(wr http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			// HTTP GET
+			fmt.Println("GET")
+		case http.MethodPost:
+			// HTTP post
+			fmt.Println("POST")
+		}
+	})
+
 	http.HandleFunc("/bar", barHandler)
 
-	http.ListenAndServe(":3000", nil)
+	http.ListenAndServe(":8080", nil)
 }
