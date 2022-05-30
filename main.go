@@ -1,45 +1,36 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"net/http"
+	"log"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/template/html"
 )
 
-/**
- * Error handling function to handle the 404 not found
- *
- */
-func errorHandler(w http.ResponseWriter, r *http.Request, status int) {
-	w.WriteHeader(status)
-	if status == http.StatusNotFound {
-		fmt.Fprint(w, "custom 404")
-	}
-
-	//TODO handle more errors
-}
-
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		errorHandler(w, r, http.StatusNotFound)
-		return
-	}
-	fmt.Fprint(w, "Hello Bar!")
-}
+var port = flag.Int("p", 8080, "서버가 Listen할 port 번호를 입력해주세요.")
 
 func main() {
-	fmt.Println("Init LinkPad server")
+	// Initialize standard Go html template engine
+	engine := html.New("./views", ".html")
 
-	http.HandleFunc("/", indexHandler)
-	http.HandleFunc("/users", func(wr http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodGet:
-			// HTTP GET
-			fmt.Println("GET")
-		case http.MethodPost:
-			// HTTP post
-			fmt.Println("POST")
-		}
+	addr := fmt.Sprintf(":%d", *port)
+	// use the fiber view engine for rendering engine
+	app := fiber.New(fiber.Config{
+		Views: engine,
 	})
 
-	http.ListenAndServe(":8080", nil)
+	app.Get("/", func(c *fiber.Ctx) error {
+		//TODO
+		return c.Render("main", fiber.Map{
+			"Title": "LinkPad",
+		})
+	})
+
+	app.Get("/ping", func(c *fiber.Ctx) error {
+		return c.SendString("Pingpong by fiber\n")
+	})
+	log.Printf("Server is listening %d", *port)
+	log.Fatal(app.Listen(addr))
 }
