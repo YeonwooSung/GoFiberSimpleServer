@@ -5,18 +5,31 @@ import (
 	"net/http"
 )
 
-func barHandler(w http.ResponseWriter, r *http.Request) {
+/**
+ * Error handling function to handle the 404 not found
+ *
+ */
+func errorHandler(w http.ResponseWriter, r *http.Request, status int) {
+	w.WriteHeader(status)
+	if status == http.StatusNotFound {
+		fmt.Fprint(w, "custom 404")
+	}
+
+	//TODO handle more errors
+}
+
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		errorHandler(w, r, http.StatusNotFound)
+		return
+	}
 	fmt.Fprint(w, "Hello Bar!")
 }
 
 func main() {
 	fmt.Println("Init LinkPad server")
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Hello World")
-		//TODO
-	})
-
+	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/users", func(wr http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
@@ -27,8 +40,6 @@ func main() {
 			fmt.Println("POST")
 		}
 	})
-
-	http.HandleFunc("/bar", barHandler)
 
 	http.ListenAndServe(":8080", nil)
 }
