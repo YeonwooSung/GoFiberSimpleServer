@@ -10,8 +10,6 @@ import (
 	"github.com/gofiber/template/html"
 )
 
-var port = flag.Int("p", 8080, "서버가 Listen할 port 번호를 입력해주세요.")
-
 func HttpServerErrorHandler(ctx *fiber.Ctx, err error) error {
 	// Status code defaults to 500
 	code := fiber.StatusInternalServerError
@@ -35,6 +33,7 @@ func HttpServerErrorHandler(ctx *fiber.Ctx, err error) error {
 func main() {
 	// Initialize standard Go html template engine
 	engine := html.New("./views", ".html")
+	var port = flag.Int("p", 8080, "서버가 Listen할 port 번호를 입력해주세요.")
 
 	addr := fmt.Sprintf(":%d", *port)
 	// use the fiber view engine for rendering engine
@@ -46,7 +45,7 @@ func main() {
 	app.Use(recover.New())
 
 	app.Get("/", func(c *fiber.Ctx) error {
-		//TODO
+		//TODO cookie parsing, session storing, etc
 		return c.Render("main", fiber.Map{
 			"Title": "LinkPad",
 		})
