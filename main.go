@@ -12,6 +12,8 @@ import (
 	"github.com/gofiber/template/html"
 )
 
+var port = flag.Int("p", 8080, "서버가 Listen할 port 번호를 입력해주세요.")
+
 func HttpServerErrorHandler(ctx *fiber.Ctx, err error) error {
 	// Status code defaults to 500
 	code := fiber.StatusInternalServerError
@@ -37,8 +39,6 @@ func HttpServerErrorHandler(ctx *fiber.Ctx, err error) error {
 func main() {
 	// Initialize standard Go html template engine
 	engine := html.New("./views", ".html")
-	var port = flag.Int("p", 8080, "서버가 Listen할 port 번호를 입력해주세요.")
-
 	addr := fmt.Sprintf(":%d", *port)
 	// use the fiber view engine for rendering engine
 	app := fiber.New(fiber.Config{
@@ -71,19 +71,21 @@ func main() {
 		})
 	})
 
+	api := app.Group("/api")                          // /api
+	v1 := api.Group("/v1", func(c *fiber.Ctx) error { // middleware for /api/v1
+		c.Set("Version", "v1")
+		return c.Next()
+	})
+
 	//-------------------------------------------------
 	// routing
-	routers.AddRoutersForLink(app)     /* "/link" api */
-	routers.AddRoutersForUser(app)     /* "/user" api */
-	routers.AddRoutersForRedirect(app) /* "/redirect" api */
+	routers.AddRoutersForLink(v1)     /* "/link" api */
+	routers.AddRoutersForUser(v1)     /* "/user" api */
+	routers.AddRoutersForRedirect(v1) /* "/redirect" api */
 
 	// define redirect rules
 	routers.DefineRedirectRules(app)
 	//-------------------------------------------------
-
-	app.Get("/ping", func(c *fiber.Ctx) error {
-		return c.SendString("Pingpong by fiber\n")
-	})
 	log.Printf("Server is listening %d", *port)
 	log.Fatal(app.Listen(addr))
 }

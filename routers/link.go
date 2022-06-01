@@ -11,6 +11,6 @@ func handler_for_link_api(c *fiber.Ctx) error {
 	})
 }
 
-func AddRoutersForLink(app *fiber.App) {
-	app.Get("/link", handler_for_link_api)
+func AddRoutersForLink(router fiber.Router) {
+	router.Get("/link", handler_for_link_api)
 }

@@ -11,6 +11,6 @@ func handler_for_user_api(c *fiber.Ctx) error {
 	})
 }
 
-func AddRoutersForUser(app *fiber.App) {
-	app.Get("/user", handler_for_user_api)
+func AddRoutersForUser(router fiber.Router) {
+	router.Get("/user", handler_for_user_api)
 }
