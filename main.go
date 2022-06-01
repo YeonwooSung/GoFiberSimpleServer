@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 
+	"linkpad/api"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/template/html"
@@ -18,9 +20,11 @@ func HttpServerErrorHandler(ctx *fiber.Ctx, err error) error {
 	if e, ok := err.(*fiber.Error); ok {
 		code = e.Code
 	}
+	// print error log for debugging
+	log.Printf("Error code: %d - err.Error(): %v\n", code, err.Error())
 
 	// Send custom error page
-	err = ctx.Status(code).SendFile(fmt.Sprintf("./%d.html", code))
+	err = ctx.Status(code).SendFile(fmt.Sprintf("views/%d.html", code))
 	if err != nil {
 		// In case the SendFile fails
 		return ctx.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
@@ -44,12 +48,38 @@ func main() {
 	// use recover for error handling
 	app.Use(recover.New())
 
+	//-----------------------------------------------
+	// Middleware
+	app.Use(func(c *fiber.Ctx) error {
+		// Set some security headers:
+		c.Set("X-XSS-Protection", "1; mode=block")
+		c.Set("X-Content-Type-Options", "nosniff")
+		c.Set("X-Download-Options", "noopen")
+		c.Set("Strict-Transport-Security", "max-age=5184000")
+		c.Set("X-Frame-Options", "SAMEORIGIN")
+		c.Set("X-DNS-Prefetch-Control", "off")
+
+		// Go to next middleware:
+		return c.Next()
+	})
+	//-----------------------------------------------
+
 	app.Get("/", func(c *fiber.Ctx) error {
 		//TODO cookie parsing, session storing, etc
 		return c.Render("main", fiber.Map{
 			"Title": "LinkPad",
 		})
 	})
+
+	//-------------------------------------------------
+	// routing
+	api.AddRoutersForLink(app)     /* "/link" api */
+	api.AddRoutersForUser(app)     /* "/user" api */
+	api.AddRoutersForRedirect(app) /* "/redirect" api */
+
+	// define redirect rules
+	api.DefineRedirectRules(app)
+	//-------------------------------------------------
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.SendString("Pingpong by fiber\n")
