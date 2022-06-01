@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"linkpad/api"
+	"linkpad/routers"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -73,12 +73,12 @@ func main() {
 
 	//-------------------------------------------------
 	// routing
-	api.AddRoutersForLink(app)     /* "/link" api */
-	api.AddRoutersForUser(app)     /* "/user" api */
-	api.AddRoutersForRedirect(app) /* "/redirect" api */
+	routers.AddRoutersForLink(app)     /* "/link" api */
+	routers.AddRoutersForUser(app)     /* "/user" api */
+	routers.AddRoutersForRedirect(app) /* "/redirect" api */
 
 	// define redirect rules
-	api.DefineRedirectRules(app)
+	routers.DefineRedirectRules(app)
 	//-------------------------------------------------
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
