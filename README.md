@@ -1,8 +1,16 @@
-# This repo is no longer maintained. Consider using `npm init vite` and selecting the `svelte` option or — if you want a full-fledged app framework and don't mind using pre-1.0 software — use [SvelteKit](https://kit.svelte.dev), the official application framework for Svelte.
+# LinkPad
 
----
+## Server
 
-# svelte app
+The backend server is implemented with Go lang with fiber v2.
+
+### fiber
+
+#### Using fiber with svelte
+
+[link](https://dev.to/ksckaan1/creating-a-website-using-golang-and-sveltejs-together-55g8)
+
+## svelte app
 
 This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
 
