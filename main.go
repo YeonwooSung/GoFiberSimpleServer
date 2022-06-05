@@ -38,7 +38,7 @@ func HttpServerErrorHandler(ctx *fiber.Ctx, err error) error {
 
 func main() {
 	// Initialize standard Go html template engine
-	engine := html.New("./views", ".html")
+	engine := html.New("./public/views", ".html")
 	addr := fmt.Sprintf(":%d", *port)
 	// use the fiber view engine for rendering engine
 	app := fiber.New(fiber.Config{
