@@ -7,7 +7,7 @@ import (
 func handler_for_link_api(c *fiber.Ctx) error {
 	//TODO cookie parsing, session storing, etc
 	return c.Render("main", fiber.Map{
-		"Title": "LinkPad",
+		"Title": "dashpad",
 	})
 }
 

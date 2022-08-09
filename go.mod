@@ -1,4 +1,4 @@
-module linkpad
+module dashpad
 
 go 1.18
 

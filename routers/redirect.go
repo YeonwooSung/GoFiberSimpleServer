@@ -10,7 +10,6 @@ func DefineRedirectRules(app *fiber.App) {
 	app.Use(redirect.New(redirect.Config{
 		Rules: map[string]string{
 			"/redirects": "/",
-			"/linkpad":   "/",
 		},
 		StatusCode: 301,
 	}))
