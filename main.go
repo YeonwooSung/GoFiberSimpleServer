@@ -76,12 +76,21 @@ func main() {
 		c.Set("Version", "v1")
 		return c.Next()
 	})
+	v2 := api.Group("/v2", func(c *fiber.Ctx) error { // middleware for /api/v2
+		c.Set("Version", "v2")
+		return c.Next()
+	})
 
 	//-------------------------------------------------
 	// routing
+
+	// routing for API v1
 	routers.AddRoutersForLink(v1)     /* "/link" api */
 	routers.AddRoutersForUser(v1)     /* "/user" api */
 	routers.AddRoutersForRedirect(v1) /* "/redirect" api */
+
+	// routing for API v2
+	routers.AddRoutersForUser(v2)
 
 	// define redirect rules
 	routers.DefineRedirectRules(app)
