@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"dashpad/routers"
+	"sampleServer/routers"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -67,7 +67,7 @@ func main() {
 	app.Get("/", func(c *fiber.Ctx) error {
 		//TODO cookie parsing, session storing, etc
 		return c.Render("main", fiber.Map{
-			"Title": "dashpad",
+			"Title": "go-server",
 		})
 	})
 

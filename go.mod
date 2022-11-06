@@ -1,4 +1,4 @@
-module dashpad
+module sampleServer
 
 go 1.18
 
